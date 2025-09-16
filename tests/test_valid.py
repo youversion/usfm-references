@@ -9,6 +9,7 @@ from usfm_references import (
     valid_multi_usfm,
     valid_usfm,
     valid_verse,
+    valid_passage,
 )
 
 
@@ -139,3 +140,22 @@ def test_valid_multi_usfm_plus(ref, expect):
 def test_valid_multi_usfm_comma(ref, expect):
     """Test chapter reference validation."""
     assert valid_multi_usfm(ref, delimiter=",") == expect
+
+
+@pytest.mark.parametrize(
+    "ref,expect",
+    [
+        ("GEN.1.1-GEN.1.4", False),
+        ("GEN.1.1-GEN", False),
+        ("GEN.000000.000000-1", False),
+        ("PSA.119.1176-1177", False),
+        ("ZZZ.1.1-2", False),
+        ("GEN.1.1-2", True),
+        ("REV.1_1.9999,REV.1_2.9999", False),
+        ("Gen.1.1-2", False),  # must be capitalized
+        ("Gen.1.1b-2c", False),  # alpha not allowed in verse
+    ],
+)
+def test_valid_passage(ref, expect):
+    """Test verse range validation."""
+    assert valid_passage(ref) == expect

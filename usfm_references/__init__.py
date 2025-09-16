@@ -5,7 +5,7 @@ USFM References Tools
 import re
 import typing
 
-__version__ = "1.4.1"
+__version__ = "1.5.0"
 
 ANY_REF = re.compile(r"^[1-9A-Z]{3}\.([0-9]{1,3}(_[0-9]+)?(\.[0-9]{1,3})?|INTRO\d+)$")
 BOOKS = [
@@ -375,5 +375,30 @@ def valid_multi_usfm(ref: str, delimiter: str = "+") -> bool:
     Another Example with COMMA delimiter: JAS.1.1,JAS.1.2,JAS.1.3,JAS.1.4,JAS.1.5
     """
     if any(not valid_usfm(usfm) for usfm in ref.split(delimiter)):
+        return False
+    return True
+
+
+def valid_passage(passage: str) -> bool:
+    """
+    Succeeds if the given string is a validly structured Bible reference passage.
+    A valid, capitalized (English) book abbreviation,
+        followed by a period (.) and a (chapter) number of any length,
+        optionally followed by an underscore (_) and a (sub-chapter?) number of any length,
+        optionally followed by a period (.) and a (verse) number of any length.
+    Multiple verses are seperated by with a hyphen and only the verse numbers.
+    """
+    try:
+        book_id, chapter_id, verse_range = passage.split(".")
+        if "-" in verse_range:
+            start_verse, end_verse = verse_range.split("-")
+            for i in range(int(start_verse), int(end_verse) + 1):
+                if not valid_usfm(f"{book_id}.{chapter_id}.{i}"):
+                    return False
+        else:
+            start_verse = verse_range  # only 1 verse
+            if not valid_usfm(f"{book_id}.{chapter_id}.{start_verse}"):
+                return False
+    except Exception:
         return False
     return True

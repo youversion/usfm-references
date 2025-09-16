@@ -5,7 +5,7 @@ USFM References Tools
 import re
 import typing
 
-__version__ = "1.5.0"
+__version__ = "1.5.1"
 
 ANY_REF = re.compile(r"^[1-9A-Z]{3}\.([0-9]{1,3}(_[0-9]+)?(\.[0-9]{1,3})?|INTRO\d+)$")
 BOOKS = [

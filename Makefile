@@ -1,7 +1,7 @@
 venv:
-	pyenv install 3.12 --skip-existing
+	pyenv install 3.9 --skip-existing
 	-pyenv uninstall -f usfm-references
-	-pyenv virtualenv 3.12 usfm-references
+	-pyenv virtualenv 3.9 usfm-references
 	pyenv local usfm-references
 	make deps-install
 

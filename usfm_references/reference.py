@@ -1,12 +1,11 @@
 """Reference class for parsing and representing USFM scripture references."""
 
 from dataclasses import dataclass, field
-from typing import override
 
 from usfm_references.books import BOOK_CANON, BOOKS
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Reference:
     """
     Represents a USFM reference, including book, chapter, section, intro, and verse ranges.
@@ -124,7 +123,6 @@ class Reference:
                 merged.append((start, end))
         self.verses = merged
 
-    @override
     def __str__(self):
         """Return the USFM string representation of the reference."""
         if self.verses:
@@ -141,7 +139,6 @@ class Reference:
     def _chapter_str(self) -> str:
         return f"{self.chapter}" + ("_" + str(self.section) if self.section else "")
 
-    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Reference):  # pragma: no cover
             return False

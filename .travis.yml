@@ -1,10 +1,13 @@
 language: python
 python:
-  - "3.5"
-  - "3.6"
+  - "3.9"
+  - "3.10"
+  - "3.11"
+  - "3.12"
 install:
-  - pip install . && pip install -r test_requirements.txt
+  - make deps-install
 script:
-  - ./linters.sh && pytest --cov usfm_references --cov-report term-missing tests/
+  - make lint
+  - make test
 after_success:
   - coveralls

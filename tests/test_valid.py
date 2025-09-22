@@ -1,15 +1,14 @@
-"""
-Test USFM validation
-"""
+"""Test USFM validation."""
+
 import pytest
 
 from usfm_references import (
     valid_chapter,
     valid_chapter_or_intro,
     valid_multi_usfm,
+    valid_passage,
     valid_usfm,
     valid_verse,
-    valid_passage,
 )
 
 
@@ -102,11 +101,11 @@ def test_valid_verse(ref, expect):
         ("GEN.1.1+GEN.1.2+GEN.1.3+GEN.1.4", True),
         ("GEN.1.1+GEN.1.2+GEN.1.3+GEN", False),
         ("GEN.000000.000000+GEN.1.1", False),
-        ("1TI.300.9+1TI.1.1", True),
+        ("1TI.300.9+1TI.1.1", False),  # cross-chapter references are now invalid
         ("PSA.119.1176", False),
         ("ZZZ.1.1+JA.1.1", False),
-        ("GEN.1_1+GEN.1_2", True),
-        ("GEN.1_9999+GEN.2_9999", True),
+        ("GEN.1_1+GEN.1_2", False),  # must be same chapter
+        ("GEN.1_9999+GEN.2_9999", False),  # must be same chapter
         ("REV.1_1.9999+REV.1_2.9999", False),
         ("Gen.1.1+Gen.1.2", False),  # must be capitalized
         ("Gen.1.1b+Gen1.1c", False),  # alpha not allowed in verse
@@ -125,11 +124,11 @@ def test_valid_multi_usfm_plus(ref, expect):
         ("GEN.1.1,GEN.1.2,GEN.1.3,GEN.1.4", True),
         ("GEN.1.1,GEN.1.2,GEN.1.3,GEN", False),
         ("GEN.000000.000000,GEN.1.1", False),
-        ("1TI.300.9,1TI.1.1", True),
+        ("1TI.300.9,1TI.1.1", False),  # must be same chapter
         ("PSA.119.1176", False),
         ("ZZZ.1.1,JA.1.1", False),
-        ("GEN.1_1,GEN.1_2", True),
-        ("GEN.1_9999,GEN.2_9999", True),
+        ("GEN.1_1,GEN.1_2", False),  # must be same chapter
+        ("GEN.1_9999,GEN.2_9999", False),  # must be same chapter
         ("REV.1_1.9999,REV.1_2.9999", False),
         ("Gen.1.1,Gen.1.2", False),  # must be capitalized
         ("Gen.1.1b,Gen1.1c", False),  # alpha not allowed in verse

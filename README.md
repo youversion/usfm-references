@@ -1,81 +1,90 @@
-# USFM-References
+# usfm-references
 
 [![Build Status](https://travis-ci.org/bbelyeu/usfm-references.svg?branch=main)](https://travis-ci.org/bbelyeu/usfm-references)
 [![Coverage Status](https://coveralls.io/repos/github/bbelyeu/usfm-references/badge.svg?branch=main)](https://coveralls.io/github/bbelyeu/usfm-references?branch=main)
+[![Python versions](https://img.shields.io/pypi/pyversions/usfm-references?color=blue)](https://pypi.org/project/usfm-references)
 
-A validator & lookup tool for USFM (Unified Standard Format Markers) Biblical references.
+Utilities for parsing, validating and manipulating USFM (Unified Standard Format Markers)
+references.
+
+This library provides:
+
+- validators for USFM strings (verse, chapter, intro, multi references)
+- a Reference model for composing and formatting references
 
 ## Requirements
 
-This project requires Python 3.6 or higher
+Python 3.9 or newer. The project CI runs on 3.9–3.12.
 
 ## Installation
 
-To install use
+Install from PyPI:
 
-    pip install usfm-references
+```bash
+pip install usfm-references
+```
 
-## Usage
+## Quick Usage
 
-Import one of the methods like
+Validate USFM reference strings using the `valid_` helpers:
 
-    from usfm_references import valid_chapter, valid_chapter_or_intro, valid_usfm, valid_verse, valid_multi_usfm
+```python
+from usfm_references import valid_verse, valid_chapter, valid_multi_usfm
 
-The validation methods all start with `valid_`. They take a single parameter
-which should be a string representation of a USFM reference. And they all
-return a boolean value representing whether the string was valid for the
-type that the method is validating against.
+valid_verse("GEN.1.1")               # True
+valid_chapter("GEN.1")               # True
+valid_multi_usfm("GEN.1.1+GEN.1.3")  # True
+```
 
-For example, if you have a string `my_reference` with a reference of Genesis 1:1,
-the appropriate USFM reference would be `GEN.1.1`. You could use the valid_verse
-method to ensure it is correct like
+Get a book's canon grouping:
 
-    if valid_verse(my_reference):
-        # do stuff
+```python
+from usfm_references import convert_book_to_canon
 
-*NOTE: These validators match a regular expression pattern. That conforms to the
-general USFM standard. They do NOT ensure that the USFM actually exists in any
-particular Bible version.*
+convert_book_to_canon("GEN")  # 'ot'
+```
 
-The currently supported validators are:
-* `valid_chapter` - Ensures the passed string is a valid USFM chapter reference
-* `valid_chapter_or_intro` - Ensures the passed string is either a valid USFM chapter
-or intro reference
-* `valid_usfm` - Ensures the passed string is a valid USFM reference (can be verse, chapter, or intro)
-* `valid_multi_usfm` - Ensures that the passed string is a valid set of USFM reference (can be verse, chapter, or intro)
-* `valid_verse` - Ensures the passed string is a valid USFM verse reference
+## Reference Model
 
-Other methods include conversion such as `convert_book_to_canon`. Import like:
+The `Reference` dataclass is a convenient way to parse, build and format USFM references. It
+normalizes verse ranges (they are kept sorted and merged when intersecting or adjacent).
 
-    from usfm_references import convert_book_to_canon
+Examples:
 
-Conversion methods all start with `convert_` and the method names should be self-explanatory
-as far as what params go in and what is returned.
+```python
+from usfm_references import Reference
 
-`convert_book_to_canon` can be used like:
+Reference.from_string("GEN.1")                # whole chapter -> Reference(book='GEN', chapter=1)
+Reference.from_string("GEN.1.1-3")            # verse range -> verses [(1, 3)]
+Reference.from_string("GEN.1.1+GEN.1.3")      # multiple verses -> verses [(1, 1), (3, 3)]
+Reference.from_string("GEN.INTRO1")           # intro chapter -> intro=1
 
-    canon = convert_book_to_canon("GEN")
-    print(canon)  # "ot"
+# Overlapping/adjacent ranges are merged:
+str(Reference.from_string("GEN.1.1+GEN.1.2+GEN.1.3"))  # 'GEN.1.1-3'
+```
 
 ## Development
 
-This project is tested in CI with Python 3.6-3.11.
-One of these must be installed before developing and testing locally.
+For local development, create a venv and install dev dependencies (project uses pip-tools):
 
-This project uses [pip-tools](https://github.com/jazzband/pip-tools) for dependency management.
-
-### Running tests
-
-``` bash
-./linters.sh && pytest --cov=usfm_references tests/
+```bash
+make venv
 ```
 
-### Before committing any code
+Run linting and formatting:
 
-We have a pre-commit hook which can be used to run linters before committing.
-You can symlink it to run before each commit by changing directory to the repo and running
+```bash
+make lint
+```
 
-``` bash
-cd .git/hooks
-ln -s ../../pre-commit pre-commit
+Run tests:
+
+```bash
+make test
+```
+
+A pre-commit hook is provided to lint and run tests before each commit. To install it, run:
+
+```bash
+(cd .git/hooks && ln -s ../../pre-commit pre-commit)
 ```

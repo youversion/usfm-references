@@ -1,14 +1,14 @@
 #!/bin/bash
 
 echo "> let's make sure we're not on main..."
-branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-if [ "$branch" == "main" ]
-then
-    echo "Cannot commit to main, please create a dev branch."
-    exit 1
+branch=$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+if [ "$branch" == "main" ]; then
+  echo "Cannot commit to main, please create a dev branch."
+  exit 1
 else
-    echo "$branch ok, continuing..."
+  echo "$branch ok, continuing..."
 fi
 echo
 
-. ./linters.sh
+make lint
+make test

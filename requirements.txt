@@ -14,6 +14,8 @@ build==1.4.0
     # via pip-tools
 certifi==2026.1.4
     # via requests
+cffi==2.0.0
+    # via cryptography
 charset-normalizer==3.4.4
     # via requests
 click==8.1.8
@@ -24,6 +26,8 @@ coverage[toml]==7.10.7
     # via
     #   -r requirements.in
     #   pytest-cov
+cryptography==46.0.6
+    # via secretstorage
 dill==0.4.1
     # via pylint
 docutils==0.22.4
@@ -52,6 +56,10 @@ jaraco-context==6.1.0
     # via keyring
 jaraco-functools==4.4.0
     # via keyring
+jeepney==0.9.0
+    # via
+    #   keyring
+    #   secretstorage
 keyring==25.7.0
     # via twine
 markdown-it-py==3.0.0
@@ -87,7 +95,9 @@ pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
-pygments==2.19.2
+pycparser==2.23
+    # via cffi
+pygments==2.20.0
     # via
     #   pytest
     #   readme-renderer
@@ -119,6 +129,8 @@ rfc3986==2.0.0
     # via twine
 rich==14.2.0
     # via twine
+secretstorage==3.3.3
+    # via keyring
 tomli==2.4.0
     # via
     #   black
@@ -135,6 +147,7 @@ typing-extensions==4.15.0
     # via
     #   astroid
     #   black
+    #   cryptography
     #   exceptiongroup
     #   pylint
 urllib3==2.6.3

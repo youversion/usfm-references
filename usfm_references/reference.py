@@ -63,23 +63,21 @@ class Reference:
     @classmethod
     def _parse_single(cls, s: str) -> "Reference":
         parts = s.split(".")
-        if len(parts) not in (2, 3):
+        if len(parts) not in (1, 2, 3):
             raise ValueError(f"invalid USFM code {s}")
 
         book = parts[0]
-        if not cls.valid_book(book):
+        if len(book) != 3 or book not in BOOKS:
             raise ValueError(f"invalid USFM book code {book}")
 
         ref = cls(book=book)
+        if len(parts) == 1:
+            return ref
+
         ref._parse_chapter(parts[1])
         if len(parts) == 3:
             ref._parse_verse_range(parts[2])
         return ref
-
-    @classmethod
-    def valid_book(cls, book: str) -> bool:
-        """Check for a valid book"""
-        return len(book) == 3 and book in BOOKS
 
     def _parse_chapter(self, chapter_str: str) -> None:
         if chapter_str.startswith("INTRO"):
@@ -154,6 +152,10 @@ class Reference:
             and self.intro == other.intro
             and self.verses == other.verses
         )
+
+    def is_book(self) -> bool:
+        """Return True if the reference is a book."""
+        return self.book > 0 and self.chapter == 0 and self.intro == 0 and not self.verses
 
     def is_chapter(self) -> bool:
         """Return True if the reference is a whole chapter."""

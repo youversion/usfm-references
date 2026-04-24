@@ -63,7 +63,7 @@ class Reference:
     @classmethod
     def _parse_single(cls, s: str) -> "Reference":
         parts = s.split(".")
-        if len(parts) not in (2, 3):
+        if len(parts) not in (1, 2, 3):
             raise ValueError(f"invalid USFM code {s}")
 
         book = parts[0]
@@ -71,6 +71,9 @@ class Reference:
             raise ValueError(f"invalid USFM book code {book}")
 
         ref = cls(book=book)
+        if len(parts) == 1:
+            return ref
+
         ref._parse_chapter(parts[1])
         if len(parts) == 3:
             ref._parse_verse_range(parts[2])

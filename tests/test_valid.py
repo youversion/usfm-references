@@ -66,7 +66,7 @@ def test_valid_chapter_or_intro(ref, expect):
         ("Gen.1.1", False),  # must be capitalized
         ("Gen.1.1b", False),  # alpha not allowed in verse
         ("GEN.1.1_1", False),  # sub verses not allowed
-        ("GEN", False),  # chapter required
+        ("GEN", True),
     ],
 )
 def test_valid_usfm(ref, expect):

@@ -42,6 +42,10 @@ from usfm_references.reference import Reference
             "GEN.1.3+GEN.1.1",
             Reference(book="GEN", chapter=1, verses=[(1, 1), (3, 3)]),
         ),
+        (
+            "GEN",
+            Reference(book="GEN"),
+        ),
     ],
 )
 def test_reference_from_string(string, reference):
@@ -53,7 +57,6 @@ def test_reference_from_string(string, reference):
     "string",
     [
         "",
-        "GEN",
         "GEN.-1.1",
         "GEN.1+GEN.2",
         "GEN.1.2-1",

@@ -46,7 +46,7 @@ def valid_usfm(ref: str) -> bool:
     """
     Succeeds if the given string is a validly structured USFM Bible reference.
     A valid, capitalized (English) book abbreviation,
-        followed by a period (.) and a (chapter) number of any length,
+        optionally followed by a period (.) and a (chapter) number of any length,
         optionally followed by an underscore (_) and a (sub-chapter?) number of any length,
         optionally followed by a period (.) and a (verse) number of any length.
     """

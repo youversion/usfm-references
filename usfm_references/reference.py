@@ -153,10 +153,6 @@ class Reference:
             and self.verses == other.verses
         )
 
-    def is_book(self) -> bool:
-        """Return True if the reference is a book."""
-        return self.book > 0 and self.chapter == 0 and self.intro == 0 and not self.verses
-
     def is_chapter(self) -> bool:
         """Return True if the reference is a whole chapter."""
         return self.chapter > 0 and not self.verses

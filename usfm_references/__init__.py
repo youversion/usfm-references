@@ -99,3 +99,11 @@ def valid_passage(passage: str) -> bool:
     Multiple verses are separated by a hyphen and only the verse numbers.
     """
     return valid_usfm(passage)
+
+
+def valid_book(book: str) -> bool:
+    """
+    Succeeds if the given string is a validly structured USFM Bible book.
+    A valid, capitalized (English) book abbreviation
+    """
+    return Reference.valid_book(book)

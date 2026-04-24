@@ -3,6 +3,7 @@
 import pytest
 
 from usfm_references import (
+    valid_book,
     valid_chapter,
     valid_chapter_or_intro,
     valid_multi_usfm,
@@ -158,3 +159,18 @@ def test_valid_multi_usfm_comma(ref, expect):
 def test_valid_passage(ref, expect):
     """Test verse range validation."""
     assert valid_passage(ref) == expect
+
+
+@pytest.mark.parametrize(
+    "ref,expect",
+    [
+        ("GEN", True),
+        ("ZZZ", False),
+        ("GEN.1", False),
+        ("GEN.1.1", False),
+        ("Gen", False),
+    ],
+)
+def test_valid_book(ref, expect):
+    """Test book validation."""
+    assert valid_book(ref) == expect

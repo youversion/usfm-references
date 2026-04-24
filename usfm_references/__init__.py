@@ -5,7 +5,7 @@ USFM References Tools
 from usfm_references.books import BOOK_CANON, BOOKS, NT_BOOKS, OT_BOOKS
 from usfm_references.reference import Reference
 
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 
 
 def convert_book_to_canon(book: str) -> str:

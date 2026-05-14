@@ -44,6 +44,25 @@ from usfm_references import convert_book_to_canon
 convert_book_to_canon("GEN")  # 'ot'
 ```
 
+Look up a USFM book code from an English book name or common abbreviation:
+
+```python
+from usfm_references import convert_book_name_to_usfm
+
+convert_book_name_to_usfm("Genesis")          # 'GEN'
+convert_book_name_to_usfm("Gen")              # 'GEN'
+convert_book_name_to_usfm("1 Samuel")         # '1SA'
+convert_book_name_to_usfm("I Samuel")         # '1SA'
+convert_book_name_to_usfm("Song of Solomon")  # 'SNG'
+convert_book_name_to_usfm("Apocalypse")       # 'REV'
+convert_book_name_to_usfm("GEN")              # 'GEN'  (USFM codes pass through)
+convert_book_name_to_usfm("Not a book")       # None
+```
+
+The lookup is case-insensitive and ignores surrounding whitespace and trailing
+punctuation. Numbered books accept arabic, roman, and word forms (e.g. `1Sam`,
+`I Sam`, `First Samuel`). Returns `None` for unrecognized input.
+
 ## Reference Model
 
 The `Reference` dataclass is a convenient way to parse, build and format USFM references. It

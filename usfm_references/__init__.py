@@ -2,15 +2,42 @@
 USFM References Tools
 """
 
-from usfm_references.books import BOOK_CANON, BOOKS, NT_BOOKS, OT_BOOKS
+import re
+from typing import Optional
+
+from usfm_references.books import BOOK_CANON, BOOK_NAMES, BOOKS, NT_BOOKS, OT_BOOKS
 from usfm_references.reference import Reference
 
-__version__ = "3.0.0"
+__version__ = "3.1.0"
+
+_NON_ALPHANUMERIC = re.compile(r"[^a-z0-9]")
 
 
 def convert_book_to_canon(book: str) -> str:
     """Return the canon category of a book (e.g., "ot", "nt", "ap")."""
     return BOOK_CANON.get(book, "ap")
+
+
+def convert_book_name_to_usfm(name: str) -> Optional[str]:
+    """
+    Return the USFM book code for an English book name or common abbreviation.
+
+    The input is matched case-insensitively and ignores whitespace and
+    punctuation, so "Genesis", "genesis", "Gen", "Gen.", and "  GENESIS  "
+    all return "GEN". Numbered books accept arabic, roman, and word forms:
+    "1 Samuel", "1Sam", "I Sam", and "First Samuel" all return "1SA". A USFM
+    code passed in directly (e.g., "GEN") is returned as-is. Returns None
+    when no match is found.
+    """
+    if not name:
+        return None
+    stripped = name.strip()
+    if stripped in BOOKS:
+        return stripped
+    key = _NON_ALPHANUMERIC.sub("", stripped.lower())
+    if not key:
+        return None
+    return BOOK_NAMES.get(key)
 
 
 def valid_chapter(ref: str) -> bool:

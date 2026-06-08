@@ -5,12 +5,44 @@ USFM References Tools
 import re
 from typing import Optional
 
-from usfm_references.books import BOOK_CANON, BOOK_NAMES, BOOKS, NT_BOOKS, OT_BOOKS
+from usfm_references.books import (
+    BOOK_CANON,
+    BOOK_NAMES,
+    BOOKS,
+    NT_BOOKS,
+    NUMBERED_BOOKS,
+    ORDINAL_WORDS,
+    OT_BOOKS,
+    ROMAN_ORDINALS,
+)
 from usfm_references.reference import Reference
 
 __version__ = "3.1.0"
 
 _NON_ALPHANUMERIC = re.compile(r"[^a-z0-9]")
+_LEADING_DIGITS = re.compile(r"^(\d+)(.+)$")
+
+
+def _split_leading_ordinal(key):
+    """
+    Split a leading ordinal off a normalized book key.
+
+    Recognizes arabic digits ("1john"), the roman forms I/II/III
+    ("iijohn"), and the words First/Second/Third ("firstjohn"). Returns
+    ``(number, remainder)`` for the first form that leaves a non-empty
+    remainder, or ``None`` when the key has no leading ordinal.
+    """
+    digits = _LEADING_DIGITS.match(key)
+    if digits:
+        return int(digits.group(1)), digits.group(2)
+    for word, value in ORDINAL_WORDS.items():
+        if key.startswith(word) and len(key) > len(word):
+            return value, key[len(word) :]
+    # Longest first so "iii"/"ii" win over the "i" prefix.
+    for roman, value in sorted(ROMAN_ORDINALS.items(), key=lambda kv: -len(kv[0])):
+        if key.startswith(roman) and len(key) > len(roman):
+            return value, key[len(roman) :]
+    return None
 
 
 def convert_book_to_canon(book: str) -> str:
@@ -37,7 +69,16 @@ def convert_book_name_to_usfm(name: str) -> Optional[str]:
     key = _NON_ALPHANUMERIC.sub("", stripped.lower())
     if not key:
         return None
-    return BOOK_NAMES.get(key)
+    if key in BOOK_NAMES:
+        return BOOK_NAMES[key]
+    # Numbered books store each stem once; peel the leading ordinal
+    # (arabic/roman/word) and resolve the remainder. Unknown stems or
+    # out-of-range ordinals (e.g. "4 John") fall through to None.
+    split = _split_leading_ordinal(key)
+    if split:
+        number, stem = split
+        return NUMBERED_BOOKS.get(stem, {}).get(number)
+    return None
 
 
 def valid_chapter(ref: str) -> bool:

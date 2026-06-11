@@ -17,7 +17,7 @@ from usfm_references.books import (
 )
 from usfm_references.reference import Reference
 
-__version__ = "3.1.0"
+__version__ = "3.1.1"
 
 _NON_ALPHANUMERIC = re.compile(r"[^a-z0-9]")
 _LEADING_DIGITS = re.compile(r"^(\d+)(.+)$")

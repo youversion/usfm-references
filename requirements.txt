@@ -26,7 +26,7 @@ coverage[toml]==7.10.7
     # via
     #   -r requirements.in
     #   pytest-cov
-cryptography==46.0.6
+cryptography==48.0.1
     # via secretstorage
 dill==0.4.1
     # via pylint
